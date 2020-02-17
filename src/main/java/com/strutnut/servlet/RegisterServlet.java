@@ -6,9 +6,9 @@ import com.strutnut.service.impl.UserServiceImpl;
 import com.strutnut.utils.md5Util;
 
 
-import javax.servlet.ServletContext;
+
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @WebServlet("/register")
+@MultipartConfig
 public class RegisterServlet extends HttpServlet {
 
     private static IUserService userService;
@@ -38,7 +39,8 @@ public class RegisterServlet extends HttpServlet {
 
         resp.setCharacterEncoding("UTF-8");
 
-        String imageName = req.getParameter("avatar");
+        Part part = req.getPart("avatar");
+        String imageName = part.getSubmittedFileName();
         String serverPath = req.getServletContext().getRealPath("images");
         File file = new File(serverPath);
         //目录不存在就创建
@@ -48,7 +50,7 @@ public class RegisterServlet extends HttpServlet {
             }
         }
 
-        String filePath = serverPath + "/" + imageName;
+        String filePath = (serverPath + "\\" + imageName).replace("\\","/");
 
         User user = new User(req.getParameter("account"), md5Util.stringTomd5(req.getParameter("password")), req.getParameter("name"),
                 req.getParameter("age"), req.getParameter("sex"), filePath, req.getParameter("signature"));
@@ -56,7 +58,7 @@ public class RegisterServlet extends HttpServlet {
         //下载上传的图片
         if (imageName != null) {
             FileOutputStream fos = new FileOutputStream(filePath);
-            InputStream sis = req.getInputStream();
+            InputStream sis = part.getInputStream();
 
             int len;
             byte[] bytes = new byte[1024];
@@ -69,7 +71,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         if (!userService.addUser(user)) {
-            resp.getWriter().write("注册失败，可能是用户名重复");
+            resp.getWriter().println("<h1>注册失败，可能是用户名重复，也有可能是有没填写的表单~");
         } else {
             resp.sendRedirect("login.jsp");
         }

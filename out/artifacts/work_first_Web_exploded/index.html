@@ -3,10 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>主页</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
-<div>这是你的主页</div>
+<div id="name" style="font-size: 50px">欢迎回来 {{account}}</div>
 <a href="/check">看看我的信息~</a><br>
 <a href="/logout">登出</a>
 </body>
+<script type="application/javascript">
+    new Vue({
+        data: {
+            el:"#name",
+            account: ""
+        },
+        mounted: {
+            search() {
+                this.account = this.getCookie("account")
+            }
+        },
+        methods: {
+            getCookie(name) {
+                let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+                if (arr = document.cookie.match(reg)) {
+                    return unescape(arr[2]);
+                } else {
+                    return null;
+                }
+            }
+        }
+    }
+    )
+</script>
 </html>

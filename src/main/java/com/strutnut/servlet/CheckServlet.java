@@ -9,7 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -37,14 +37,17 @@ public class CheckServlet extends HttpServlet {
         ResultSet result = userService.findUserByAccount(account);
         try {
             while (result.next()) {
-                String sex = "on".equals(result.getString("sex")) ? "fale" : "female";
-                resp.getWriter().write(
-                        " 用户名: " + result.getString("account")
-                                + " 姓名: " + result.getString("name")
-                                + " 年龄: " + result.getString("age")
-                                + " 性别: " + sex
-                                + " 个性签名: " + result.getString("signature")
-                );
+                String sex = "on".equals(result.getString("sex")) ? "男" : "女";
+                String imagePath = result.getString("avatar");
+                resp.getWriter().print(
+                        " 用户名: " + result.getString("account") + "<br>"
+                                + " 姓名: " + result.getString("name") + "<br>"
+                                + " 年龄: " + result.getString("age") + "<br>"
+                                + " 性别: " + sex + "<br>"
+                                + " 个性签名: " + result.getString("signature") + "<br>");
+                resp.getWriter().println(" 头像: " + "<image src=\"" + imagePath + "\"></image>" + "<br>");
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();

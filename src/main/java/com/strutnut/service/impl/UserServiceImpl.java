@@ -37,6 +37,7 @@ public class UserServiceImpl implements IUserService {
     public boolean addUser(User user) {
         if (user.getName() == null || user.getPassword() == null || user.getAccount() == null
                 || user.getAge() == null || user.getAvatar() == null || user.getSex() == null) {
+            System.out.println("不允许空表单");
             return false;
         }
         ResultSet resultSet = userDao.findUserByAccount(user.getAccount());
