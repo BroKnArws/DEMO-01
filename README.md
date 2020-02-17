@@ -5,8 +5,8 @@
 ## Servlet
 * LoginServlet 负责登录操作，返回md5加密后的密码作为cookie
 * CheckServlet 负责查看用户信息
-* LogoutServlet 登出操作
-* RegisterServlet 注册操作
+* LogoutServlet 负责登出操作
+* RegisterServlet 负责注册操作
 
 ## Filter
 * LoginFilter 目标资源是login.jsp，登录过期或未曾登录的，予以放行，否则请求转发至index.html
