@@ -16,22 +16,31 @@ public class DatabaseUtil {
     private static final String NAME = "root";
     private static final String PASSWORD = "123456";
 
+    private static Connection connection;
+
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(URL, NAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /* 连接数据库和返回结果集 */
     public static ResultSet connect(String sql) {
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(URL, NAME, PASSWORD);
-            Statement stmt = connection.createStatement();
 //            增删改如果使用executeQuery会报错。
+            Statement stmt = connection.createStatement();
             if (sql.contains("UPDATE") || sql.contains("DELETE") || sql.contains("INSERT")) {
                 stmt.executeUpdate(sql);
             } else {
                 ResultSet rs = stmt.executeQuery(sql);
                 return rs;
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
